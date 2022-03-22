@@ -1,0 +1,22 @@
+h1{
+    color:#000000;
+    text-align:center;
+    font-size:3em;
+    
+
+}
+
+body{
+    background-color:#3AAFA9;
+    text-align:center;
+    font-size:1.5em;
+
+}
+
+main{
+    margin:4rem;
+    border:2px solid black;
+    background-color:white;
+    padding:4px;
+
+}
