@@ -1,0 +1,43 @@
+
+
+
+body{
+    display:flex;
+    background-color:#b2beb5;
+    align-items:center;
+    justify-content:center; 
+    min-height:100vh;
+    font-family:arial;
+
+}
+
+ul{
+    padding:0;
+
+}
+
+.quiz-container{
+    text-align:center;
+    background-color:white;
+    width:650px;	
+    max-width:100%;
+    overflow:hidden;
+    border-radius:10px;
+}
+
+
+button{
+    display:block;
+    width:100%;
+    font-size:20px;
+    background-color:#6699cc;
+    padding:2rem;
+    font-weight:bold;
+
+
+}
+button:hover{
+    background-color:#0073cf;
+
+}
+
