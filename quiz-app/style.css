@@ -1,6 +1,9 @@
 
+.{
+    box-sizing:border-box;
 
 
+}
 body{
     display:flex;
     background-color:#b2beb5;
@@ -11,6 +14,10 @@ body{
 
 }
 
+label{
+    text-align:center;
+
+}
 ul{
     padding:0;
 
