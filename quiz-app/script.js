@@ -46,77 +46,92 @@ let dataHandle= (questionNumber,answerId=undefined)=>{
 
 
     ];
-    let objectList=questionData[questionNumber];
-    console.log(questionNumber);
-    console.log(objectList.answer===objectList[answerId]);
-    if(answerId!==undefined){
-        return objectList.answer===objectList[answerId]
+    let objectList=undefined;
 
-    }
-1
     if(questionNumber<questionData.length){
+        objectList=questionData[questionNumber];
+    }
+
+    if(answerId!=undefined && objectList!=undefined){
+        return objectList[answerId]===objectList.answer;
+    }
+
+    if(answerId===undefined){
         return objectList;
 
     }
-
     return undefined;
 
 
+
+
+
 }
 
-let questionNumber=0;
-let insertData =()=>{
-    let data=dataHandle(questionNumber);
-    if(data!=undefined){
-        questionIn.innerHTML=data.question;
-        optionA.innerHTML=data.a;
-        optionB.innerHTML=data.b;
-        optionC.innerHTML=data.c;
-        optionD.innerHTML=data.d;
+
+let insertData = (questionNumber)=>{
+    let questionData=dataHandle(questionNumber);
+    if(questionData!=undefined){
+        questionIn.innerHTML=questionData.question;
+        optionA.innerHTML=questionData.a;
+        optionB.innerHTML=questionData.b;
+        optionC.innerHTML=questionData.c;
+        optionD.innerHTML=questionData.d;
     }
+    /*
+    else{
+        questionIn.remove();
+        optionA.remove();
+        optionB.remove();
+        optionC.remove();
+        optionD.remove();
+
+        for(let i=0;i<4;i++){
+            answerIn=getAnswer();
+            answerIn[i].remove();
+        }
+    }
+    */
+
 
 }
 
-
-
-let getAnswer= ()=>{
+let getAnswer=()=>{ 
     for(let i=0;i<4;i++){
         let answer=answerIn[i];
-        if(answer.checked){
-            return answer.id;
-        }
+        if(answer.checked) return answer.id;
     }
 
     return 'e';
+
 }
 
 let score=0;
-let main= ()=>{
-    insertData();
+let scoretTracker= (questionNumber)=>{
+    let answerId=getAnswer();
+    console.log(`before dataHandle ${answerId}`);
+    if(dataHandle(questionNumber,answerId)){
+        score++;
+    }
+    console.log(score);
+
+}
+let questionNumber=0;
+let  main= ()=>{
+    insertData(questionNumber);
     btn.addEventListener('click',()=>{
         let answerId=getAnswer();
-       // console.log(answerId);
         if(answerId!='e'){
-           if(dataHandle(questionNumber,answerId))score++;
-            console.log(score);
-            if(dataHandle(questionNumber)!==undefined){
-                questionNumber++;
-                insertData();
-            }
-            else{
-                console.log(score);
-
-
-            }
-
+            scoretTracker(questionNumber);
+            questionNumber++;
+            insertData(questionNumber);
 
 
         }
 
-
-
+        else alert('Please tick the option ');
     })
-
 }
 
 main();
+
