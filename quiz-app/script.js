@@ -1,4 +1,5 @@
 //selected from html
+const quiz=document.querySelector("#quiz-c");
 const questionIn=document.querySelector('#Question');
 const optionA=document.querySelector('#a_text');
 const optionB=document.querySelector('#b_text');
@@ -7,131 +8,118 @@ const optionD=document.querySelector('#d_text');
 const btn=document.querySelector('#btn');
 const answerIn=document.querySelectorAll('input[name="quiz-op"]');
 //question answer list
-let dataHandle= (questionNumber,answerId=undefined)=>{
-    let questionData=[
-        {
-            question:'Who Is The President Of India ?',
-            a:'R Govind',
-            b:'bahubali',
-            c:'Ravi',
-            d:'lk advani',
-            answer:'R Govind'
-
-        },
-        {
-            question:'Who is pm of India ?',
-            a:'narendra modi',
-            b:'k gobalan',
-            c:'ravi',
-            d:'raja ravi varma',
-            answer:'narendra modi'
-        },
-        {
-            question:'Who is the pm of China ?',
-            a:'Shijin ping',
-            b:'ram goap k',
-            c:'Ravi vasu',
-            d:'mr dop ping',
-            answer:'Shijin ping'
-        },
-        {
-            question:'Who is the President of Usa',
-            a:'Donald Trump',
-            b:'Mr jhon sins',
-            c:'Mr gibrane',
-            d:'Mr ramgopal vermal',
-            answer:'Donald Trump'
-
-        }
-
-
-    ];
-    let objectList=undefined;
-
-    if(questionNumber<questionData.length){
-        objectList=questionData[questionNumber];
-    }
-
-    if(answerId!=undefined && objectList!=undefined){
-        return objectList[answerId]===objectList.answer;
-    }
-
-    if(answerId===undefined){
-        return objectList;
-
-    }
-    return undefined;
-
-
-
-
-
-}
-
-
-let insertData = (questionNumber)=>{
-    let questionData=dataHandle(questionNumber);
-    if(questionData!=undefined){
-        questionIn.innerHTML=questionData.question;
-        optionA.innerHTML=questionData.a;
-        optionB.innerHTML=questionData.b;
-        optionC.innerHTML=questionData.c;
-        optionD.innerHTML=questionData.d;
-    }
-    /*
-    else{
-        questionIn.remove();
-        optionA.remove();
-        optionB.remove();
-        optionC.remove();
-        optionD.remove();
-
-        for(let i=0;i<4;i++){
-            answerIn=getAnswer();
-            answerIn[i].remove();
-        }
-    }
-    */
-
-
-}
-
-let getAnswer=()=>{ 
-    for(let i=0;i<4;i++){
-        let answer=answerIn[i];
-        if(answer.checked) return answer.id;
-    }
-
-    return 'e';
-
-}
-
-let score=0;
-let scoretTracker= (questionNumber)=>{
-    let answerId=getAnswer();
-    console.log(`before dataHandle ${answerId}`);
-    if(dataHandle(questionNumber,answerId)){
-        score++;
-    }
-    console.log(score);
-
-}
 let questionNumber=0;
-let  main= ()=>{
-    insertData(questionNumber);
+let questionData=[
+    {
+        question:'Who Is The President Of India ?',
+        a:'R Govind',
+        b:'bahubali',
+        c:'Ravi',
+        d:'lk advani',
+        answer:'R Govind',
+
+    },
+    {
+        question:'Who is pm of India ?',
+        a:'narendra modi',
+        b:'k gobalan',
+        c:'ravi',
+        d:'raja ravi varma',
+        answer:'narendra modi',
+    },
+    {
+        question:'Who is the pm of China ?',
+        a:'Shijin ping',
+        b:'ram goap k',
+        c:'Ravi vasu',
+        d:'mr dop ping',
+        answer:'Shijin ping',
+    },
+    {
+        question:'Who is the President of Usa ?',
+        a:'Donald Trump',
+        b:'Mr jhon sins',
+        c:'Mr gibrane',
+        d:'joe biden',
+        answer:'joe biden',
+
+    },
+    {
+        question:'Captial of India ?',
+        a:'Mumbai',
+        b:'Delhi',
+        c:'Banglore',
+        d:'Ravi puram',
+        answer:'Delhi',
+
+    }
+
+];
+//to insertData
+let insertData = ()=>{
+    clearSelect();
+    let currentQuestion=questionData[questionNumber];
+    if(questionNumber<questionData.length){
+        questionIn.innerHTML=currentQuestion.question;
+        optionA.innerHTML=currentQuestion.a;
+        optionB.innerHTML=currentQuestion.b;
+        optionC.innerHTML=currentQuestion.c;
+        optionD.innerHTML=currentQuestion.d;
+    }
+    questionNumber++;
+
+}
+
+// to get id of selected element
+let getAnswer =()=>{
+    let answerId=undefined;
+    answerIn.forEach((answer)=>{
+        if(answer.checked) answerId=answer.id;
+    })
+
+    return answerId;
+
+}
+
+//to clear selected
+
+let clearSelect=()=>{
+    answerIn.forEach((answer)=>{
+        if(answer.checked){
+            answer.checked=false;
+        }
+
+    })
+
+}
+
+let main =()=>{
+    insertData();
     btn.addEventListener('click',()=>{
         let answerId=getAnswer();
-        if(answerId!='e'){
-            scoretTracker(questionNumber);
-            questionNumber++;
-            insertData(questionNumber);
+        console.log(`currentQuestionNUmber ${questionNumber}`);
+        if(questionNumber<questionData.length &&  answerId!==undefined){
+            scoreTracker(answerId);
+            insertData();
+        }else if(answerId===undefined){
+            alert('Please select an option');
 
-
+        }else if(questionNumber>=questionData.length){ 
+            quiz.innerHTML=`<h2> You scored ${score+1}/${questionData.length}</h2>
+                <button onclick="location.reload()">Reload</button>`
+           // console.log(`score inside event ${score}`);
         }
 
-        else alert('Please tick the option ');
     })
+
+}
+let score =0;
+let scoreTracker =(answerId)=>{
+    if(questionNumber-1<questionData.length){
+        currentQuestion=questionData[questionNumber-1];
+        if(currentQuestion[answerId]===currentQuestion['answer']) score++;
+          //console.log(score);
+    }
 }
 
 main();
-
