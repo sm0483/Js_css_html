@@ -2,6 +2,7 @@
 const mealsIn=document.querySelector('.meals');
 const searchTermIn=document.querySelector('.search-text')
 const searchBtnIn=document.querySelector('.search-button');
+const favButtonIn=document.querySelectorAll('.fav-button');
 
 //TODO 
 //create a liked list and pop about it
@@ -27,14 +28,34 @@ let addData=(mealData,random=false)=>{
                 </div>
                 <div class="meal-body">
                     <h4>${mealData.strMeal}</h4>
-                    <button>
+                    <button class="fav-button", id="${mealData.idMeal}">
                         <i class="fa-regular fa-heart"></i>
                     </button>
                 </div>
 
     `;
+    let meal=undefined;
+    let likedMeal=[];
+    mealsIn.appendChild(par);
+    par.addEventListener('click', (res)=>{
+        if(res.target.className==='fav-button'){
+            console.log(res.target.id);
+            meal=getMealbyId(res.target.id);
+            meal.then((data)=>{
+         //       console.log(data[0]);
+                likedMeal.push(data[0]);
 
-    mealsIn.appendChild(par); 
+            })
+        }
+    })
+
+    for(let meal of likedMeal){
+        console.log(meal);
+
+    }
+
+
+
 }
 
 //get radome meal
@@ -62,7 +83,7 @@ let getMealByName = async (foodName,clear=false)=>{
         const res=await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s="+foodName);
         const resData=await res.json();
         meals=resData.meals;
-        console.log(meals);
+        //console.log(meals);
     }
     catch(e){
         console.log(e)
@@ -81,6 +102,23 @@ let getMealByName = async (foodName,clear=false)=>{
 }
 
 //get meal by letter
+
+let getMealbyId =async (id)=>{
+    let meal=undefined;
+    try{
+        const res=await fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i="+id);
+        const resData=await res.json();
+        meal=resData.meals;
+    }
+    catch(e){
+        console.log(e)
+
+    }
+
+    return meal;
+
+
+}
 
 let getMealByLetter = async (letter)=>{
     let meals=undefined;
