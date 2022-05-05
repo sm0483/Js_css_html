@@ -3,15 +3,33 @@ const mealsIn=document.querySelector('.meals');
 const searchTermIn=document.querySelector('.search-text')
 const searchBtnIn=document.querySelector('.search-button');
 const favButtonIn=document.querySelectorAll('.fav-button');
+const favMealListIn=document.querySelector('.fav-meals');
 
 //TODO 
 //create a liked list and pop about it
 
 //remve already existing data
+
+//global list for saving liked  content;
+
+let likedMeal=[];
 let clearPage=()=>{
     mealsIn.innerHTML="";
 }
 
+let clearFav= ()=>{
+    favMealListIn.innerHTML=" ";
+
+}
+
+let checkPresent= (id)=>{
+    for(let meal of likedMeal){
+        if (meal.idMeal===id) return false;
+
+    }
+    return true;
+
+}
 
 //create new data and append to parent
 let addData=(mealData,random=false)=>{
@@ -35,28 +53,75 @@ let addData=(mealData,random=false)=>{
 
     `;
     let meal=undefined;
-    let likedMeal=[];
     mealsIn.appendChild(par);
+
+    //store data in array;
+
     par.addEventListener('click', (res)=>{
         if(res.target.className==='fav-button'){
-            console.log(res.target.id);
-            meal=getMealbyId(res.target.id);
-            meal.then((data)=>{
-         //       console.log(data[0]);
-                likedMeal.push(data[0]);
+            let mealId=res.target.id;
+            if(checkPresent(mealId)){
+                meal=getMealbyId(res.target.id);
+                meal
+                    .then((data)=>{
+                        //console.log(data[0]);
+                        likedMeal.push(data[0]);
+                        addToFavorite();
 
-            })
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    })
+            }
         }
     })
+    //testing data saved to likedMeal array
+    //console.log(likedMeal);
+    
 
-    for(let meal of likedMeal){
-        console.log(meal);
-
-    }
 
 
 
 }
+
+let addToFavorite= ()=>{
+    //store meal data
+    //stringify
+    let stringMealData=JSON.stringify(likedMeal);
+    JSON.stringify(stringMealData);
+
+    localStorage.setItem('localMeal',stringMealData);
+    let retriveData=JSON.parse(localStorage.getItem('localMeal'));
+
+    clearFav();
+    for(let mealData of retriveData){
+        const li=document.createElement('li');
+
+        li.innerHTML=`
+                    <img src="${mealData.strMealThumb}" alt=" ">
+                    <span>${mealData.strMeal}</span>
+                    <span><button class="rm-button"id="${mealData.idMeal}">&times</button></span>
+        `
+        favMealListIn.appendChild(li);
+        favMealListIn.addEventListener('click', (res)=>{
+            if(res.target.className==='rm-button'){
+                let mealId=res.target.id;
+                //remove this id
+                likedMeal=likedMeal.filter((data)=>{
+                    if(data.idMeal!==mealId) return data;
+                })
+                addToFavorite();
+            }
+            
+
+        })
+    }
+
+
+}
+
+
+
 
 //get radome meal
 let getRandomeMeal = async (clear=false)=>{
