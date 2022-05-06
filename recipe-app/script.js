@@ -23,7 +23,9 @@ let clearFav= ()=>{
 }
 
 let checkPresent= (id)=>{
+    //console.log(id);
     for(let meal of likedMeal){
+        //  console.log(meal.idMeal);
         if (meal.idMeal===id) return false;
 
     }
@@ -46,7 +48,7 @@ let addData=(mealData,random=false)=>{
                 </div>
                 <div class="meal-body">
                     <h4>${mealData.strMeal}</h4>
-                    <button class="fav-button", id="${mealData.idMeal}">
+                    <button class="fav-button", id="id${mealData.idMeal}">
                         <i class="fa-regular fa-heart"></i>
                     </button>
                 </div>
@@ -58,14 +60,23 @@ let addData=(mealData,random=false)=>{
     //store data in array;
 
     par.addEventListener('click', (res)=>{
+        let mealId=res.target.id;
+        let likeButton=undefined;
+        console.log(mealId);
+        try{
+            likeButton=document.querySelector(`#${mealId}`);
+        }catch(err){
+            likeButton=undefined;
+
+        }
         if(res.target.className==='fav-button'){
-            let mealId=res.target.id;
-            if(checkPresent(mealId)){
-                meal=getMealbyId(res.target.id);
+            if(checkPresent(mealId.substring(2))){
+                meal=getMealbyId(res.target.id.substring(2));
                 meal
                     .then((data)=>{
                         //console.log(data[0]);
                         likedMeal.push(data[0]);
+                        likeButton.classList.add('active');
                         addToFavorite();
 
                     })
@@ -73,11 +84,23 @@ let addData=(mealData,random=false)=>{
                         console.log(err);
                     })
             }
+
+        }
+        else if(res.target.className==='fav-button active'){
+            likedMeal=likedMeal.filter((data)=>{
+                if(data.idMeal!==mealId.substring(2)){ 
+                    return data;
+                }
+            })
+            likeButton.classList.remove('active');
+            console.log(likeButton.className);
+            addToFavorite();
+
         }
     })
     //testing data saved to likedMeal array
     //console.log(likedMeal);
-    
+
 
 
 
@@ -88,7 +111,7 @@ let addToFavorite= ()=>{
     //store meal data
     //stringify
     let stringMealData=JSON.stringify(likedMeal);
-    JSON.stringify(stringMealData);
+    //JSON.stringify(stringMealData);
 
     localStorage.setItem('localMeal',stringMealData);
     let retriveData=JSON.parse(localStorage.getItem('localMeal'));
@@ -100,19 +123,22 @@ let addToFavorite= ()=>{
         li.innerHTML=`
                     <img src="${mealData.strMealThumb}" alt=" ">
                     <span>${mealData.strMeal}</span>
-                    <span><button class="rm-button"id="${mealData.idMeal}">&times</button></span>
+                    <span><button class="rm-button"id="rm${mealData.idMeal}">&times</button></span>
         `
         favMealListIn.appendChild(li);
+        let mealBtnFav=undefined;
         favMealListIn.addEventListener('click', (res)=>{
+            mealBtnFav=document.querySelector(`#id${res.target.id.substring(2)}`);
             if(res.target.className==='rm-button'){
-                let mealId=res.target.id;
+                let mealId=res.target.id.substring(2);
                 //remove this id
                 likedMeal=likedMeal.filter((data)=>{
                     if(data.idMeal!==mealId) return data;
                 })
+                mealBtnFav.classList.remove('active');
                 addToFavorite();
             }
-            
+
 
         })
     }
@@ -173,6 +199,7 @@ let getMealbyId =async (id)=>{
     try{
         const res=await fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i="+id);
         const resData=await res.json();
+        //console.log(res.ok);
         meal=resData.meals;
     }
     catch(e){

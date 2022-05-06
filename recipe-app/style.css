@@ -131,6 +131,11 @@ header button {
 
 
 .fav-button{
+    background-color:white;
+
+}
+
+.fav-button.active{
     background-color:green;
 
 }
