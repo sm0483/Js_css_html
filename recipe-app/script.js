@@ -7,25 +7,23 @@ const favMealListIn=document.querySelector('.fav-meals');
 
 //TODO 
 //create a liked list and pop about it
-
-//remve already existing data
-
 //global list for saving liked  content;
 
 let likedMeal=[];
+
+//clear already loaded meal from html page
 let clearPage=()=>{
     mealsIn.innerHTML="";
 }
-
+//clear fav list from html page
 let clearFav= ()=>{
     favMealListIn.innerHTML=" ";
 
 }
 
+//check already present in the array of data
 let checkPresent= (id)=>{
-    //console.log(id);
     for(let meal of likedMeal){
-        //  console.log(meal.idMeal);
         if (meal.idMeal===id) return false;
 
     }
@@ -33,8 +31,58 @@ let checkPresent= (id)=>{
 
 }
 
+let changeBtnColor= (par)=>{
+    let meal=undefined;
+    //event listner for general button in html page
+    par.addEventListener('click', (res)=>{
+        let mealId=res.target.id;
+        let mealBtnClassName=res.target.className;
+        let likeButton=undefined;
+        //console.log(mealId);
+        try{
+            likeButton=document.querySelector(`#${mealId}`);
+        }
+        catch(err){
+            likeButton=undefined;
+
+        }
+        if(mealBtnClassName==='fav-button'){
+            if(checkPresent(mealId.substring(2))){
+                //get fav meal details from api
+                meal=getMealbyId(mealId.substring(2))
+                    .then((data)=>{
+                        //console.log(data[0]);
+                        likedMeal.push(data[0]);
+                        //to change color add additonal class active
+                        likeButton.classList.add('active');
+                        //load new fav container
+                        addToFavorite();
+
+                    })
+                    .catch((err)=>{
+                        console.log(err);
+                    })
+            }
+
+        }
+        //if already liked then remove that like
+        else if(mealBtnClassName==='fav-button active'){
+            likedMeal=likedMeal.filter((data)=>{
+                if(data.idMeal!==mealId.substring(2)){ 
+                    return data;
+                }
+            })
+            likeButton.classList.remove('active');
+            console.log(likeButton.className);
+            addToFavorite();
+
+        }
+    })
+
+}
+
 //create new data and append to parent
-let addData=(mealData,random=false)=>{
+let addDataToMealBody=(mealData,random=false)=>{
     const par=document.createElement('div');
     par.classList.add('meal');
     par.innerHTML=`
@@ -54,57 +102,36 @@ let addData=(mealData,random=false)=>{
                 </div>
 
     `;
-    let meal=undefined;
     mealsIn.appendChild(par);
 
-    //store data in array;
+    //store data in array; and change color of button
+    changeBtnColor(par);
 
-    par.addEventListener('click', (res)=>{
-        let mealId=res.target.id;
-        let likeButton=undefined;
-        console.log(mealId);
-        try{
-            likeButton=document.querySelector(`#${mealId}`);
-        }catch(err){
-            likeButton=undefined;
+}
 
-        }
-        if(res.target.className==='fav-button'){
-            if(checkPresent(mealId.substring(2))){
-                meal=getMealbyId(res.target.id.substring(2));
-                meal
-                    .then((data)=>{
-                        //console.log(data[0]);
-                        likedMeal.push(data[0]);
-                        likeButton.classList.add('active');
-                        addToFavorite();
-
-                    })
-                    .catch((err)=>{
-                        console.log(err);
-                    })
-            }
-
-        }
-        else if(res.target.className==='fav-button active'){
+let removeFav =()=>{ 
+    let mealBtnFav=undefined;
+    favMealListIn.addEventListener('click', (res)=>{
+        mealBtnFav=document.querySelector(`#id${res.target.id.substring(2)}`);
+        if(res.target.className==='rm-button'){
+            let mealId=res.target.id.substring(2);
+            console.log(mealId);
+            //remove this id
             likedMeal=likedMeal.filter((data)=>{
-                if(data.idMeal!==mealId.substring(2)){ 
-                    return data;
-                }
+                if(data.idMeal!==mealId) return data;
             })
-            likeButton.classList.remove('active');
-            console.log(likeButton.className);
+            try{
+                mealBtnFav.classList.remove('active');
+            }
+            catch(err){
+                console.error(err);
+
+            }
             addToFavorite();
-
         }
+
+
     })
-    //testing data saved to likedMeal array
-    //console.log(likedMeal);
-
-
-
-
-
 }
 
 let addToFavorite= ()=>{
@@ -126,27 +153,9 @@ let addToFavorite= ()=>{
                     <span><button class="rm-button"id="rm${mealData.idMeal}">&times</button></span>
         `
         favMealListIn.appendChild(li);
-        let mealBtnFav=undefined;
-        favMealListIn.addEventListener('click', (res)=>{
-            mealBtnFav=document.querySelector(`#id${res.target.id.substring(2)}`);
-            if(res.target.className==='rm-button'){
-                let mealId=res.target.id.substring(2);
-                console.log(mealId);
-                //remove this id
-                likedMeal=likedMeal.filter((data)=>{
-                    if(data.idMeal!==mealId) return data;
-                })
-                try{
-                mealBtnFav.classList.remove('active');
-                }catch(err){
-                    console.error(err);
+        //rm button
+        removeFav();
 
-                }
-                addToFavorite();
-            }
-
-
-        })
     }
 
 
@@ -167,9 +176,9 @@ let getRandomeMeal = async (clear=false)=>{
 
     }
 
-    if(clear) mealsIn.innerHTML="";
+    if(clear) clearPage();
 
-    addData(resData.meals[0],true);
+    addDataToMealBody(resData.meals[0],true);
 
 }
 
@@ -190,7 +199,7 @@ let getMealByName = async (foodName,clear=false)=>{
     if(clear) mealsIn.innerHTML="";
     if(meals!=undefined){
         meals.forEach((meal)=>{
-            addData(meal,false,true);
+            addDataToMealBody(meal,false,true);
 
         })
     }
@@ -231,7 +240,7 @@ let getMealByLetter = async (letter)=>{
     }
 
     for(let meal of meals){
-        addData(meal);
+        addDataToMealBody(meal);
     }
 }
 
