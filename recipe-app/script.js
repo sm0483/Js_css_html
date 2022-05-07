@@ -131,11 +131,17 @@ let addToFavorite= ()=>{
             mealBtnFav=document.querySelector(`#id${res.target.id.substring(2)}`);
             if(res.target.className==='rm-button'){
                 let mealId=res.target.id.substring(2);
+                console.log(mealId);
                 //remove this id
                 likedMeal=likedMeal.filter((data)=>{
                     if(data.idMeal!==mealId) return data;
                 })
+                try{
                 mealBtnFav.classList.remove('active');
+                }catch(err){
+                    console.error(err);
+
+                }
                 addToFavorite();
             }
 
