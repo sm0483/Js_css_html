@@ -131,11 +131,22 @@ header button {
 
 
 .fav-button{
-    background-color:white;
-
+    border: none;
+    background-color: transparent;
+    color: rgb(197, 188, 188);
+    cursor: pointer;
+    font-size:20px;
 }
 
 .fav-button.active{
-    background-color:green;
+    color: rebeccapurple;
+}
+button{
+    background-color: transparent;
+    border: none;
+    color: rgb(138, 129, 141);
+    font-size: 1.5rem;
+    margin-left: 10px;
+    position:relative;
 
 }

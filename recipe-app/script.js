@@ -10,10 +10,14 @@ const favMealListIn=document.querySelector('.fav-meals');
 //global list for saving liked  content;
 
 let likedMeal=[];
+let rmLikedMeal= (id)=>{
+    likedMeal=likedMeal.filter((meal)=>{
+        if(meal.idMeal!==id) return meal;
+    })
+
+}
 
 //store all meal id currently loaded
-
-
 const clearAllMealData= ()=>{
     allMealData=[];
 
@@ -24,18 +28,8 @@ let clearPage=()=>{
     mealsIn.innerHTML="";
 }
 //clear fav list from html page
-let clearFav= ()=>{
+let clearFavMealListIn= ()=>{
     favMealListIn.innerHTML=" ";
-
-}
-
-//check already present in the array of data
-let checkPresent= (id)=>{
-    for(let meal of likedMeal){
-        if (meal.idMeal===id) return false;
-
-    }
-    return true;
 
 }
 
@@ -45,7 +39,7 @@ let changeBtnColor=  (id)=>{
     let btn=document.querySelector(`#id${id}`);
     btn.addEventListener('click',(res)=>{
         //let likeMealId=res.target.id.substring(2);
-        if(res.target.className=='fav-button'){
+        if(res.target.className==='fav-button' || res.target.className==='fas fa-heart'){
             likedMealData=getMealbyId(id)
                 .then((res)=>{
                     //console.log(res[0]);
@@ -65,9 +59,7 @@ let changeBtnColor=  (id)=>{
                 console.log(err);
 
             }
-            likedMeal=likedMeal.filter((meal)=>{
-                if(meal.idMeal!=id) return meal;
-            })
+            rmLikedMeal(id);
             addToFavorite();
 
         }
@@ -90,13 +82,12 @@ let addDataToMealBody=(mealData,random=false)=>{
                 <div class="meal-body">
                     <h4>${mealData.strMeal}</h4>
                     <button class="fav-button", id="id${mealData.idMeal}">
-                        <i class="fa-regular fa-heart"></i>
+                        <i class="fas fa-heart" ></i>
                     </button>
                 </div>
 
     `;
     mealsIn.appendChild(par);
-    //console.log(allMealData);
 
     //save all button to list
     changeBtnColor(mealData.idMeal);
@@ -118,12 +109,15 @@ let removeFav =(id)=>{
     }
     btn.addEventListener('click', (res)=>{
         //console.log(likedMeal);
-        likedMeal=likedMeal.filter((meal)=>{
-            console.log(meal.idMeal);
-            if(meal.idMeal!=id) return meal;
-        })
+        rmLikedMeal(id);
         addToFavorite();
+        try{
         btnInMain.classList.remove('active');
+        }
+        catch(err){
+            console.log(err);
+
+        }
 
     })
 }
@@ -137,7 +131,7 @@ let addToFavorite= ()=>{
     localStorage.setItem('localMeal',stringMealData);
     let retriveData=JSON.parse(localStorage.getItem('localMeal'));
 
-    clearFav();
+    clearFavMealListIn();
     for(let mealData of retriveData){
         const li=document.createElement('li');
 
