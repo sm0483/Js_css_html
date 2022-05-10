@@ -11,6 +11,14 @@ const favMealListIn=document.querySelector('.fav-meals');
 
 let likedMeal=[];
 
+//store all meal id currently loaded
+
+
+const clearAllMealData= ()=>{
+    allMealData=[];
+
+}
+
 //clear already loaded meal from html page
 let clearPage=()=>{
     mealsIn.innerHTML="";
@@ -31,54 +39,39 @@ let checkPresent= (id)=>{
 
 }
 
-let changeBtnColor= (par)=>{
-    let meal=undefined;
+let changeBtnColor=  (id)=>{
     //event listner for general button in html page
-    par.addEventListener('click', (res)=>{
-        let mealId=res.target.id;
-        let mealBtnClassName=res.target.className;
-        let likeButton=undefined;
-        //console.log(mealId);
-        try{
-            likeButton=document.querySelector(`#${mealId}`);
-        }
-        catch(err){
-            likeButton=undefined;
 
+    let btn=document.querySelector(`#id${id}`);
+    btn.addEventListener('click',(res)=>{
+        //let likeMealId=res.target.id.substring(2);
+        if(res.target.className=='fav-button'){
+            likedMealData=getMealbyId(id)
+                .then((res)=>{
+                    //console.log(res[0]);
+                    likedMeal.push(res[0]);
+                    btn.classList.add('active');
+                    addToFavorite();
+                })
+                .catch((err)=>{
+                    console.log(err);
+                })
         }
-        if(mealBtnClassName==='fav-button'){
-            if(checkPresent(mealId.substring(2))){
-                //get fav meal details from api
-                meal=getMealbyId(mealId.substring(2))
-                    .then((data)=>{
-                        //console.log(data[0]);
-                        likedMeal.push(data[0]);
-                        //to change color add additonal class active
-                        likeButton.classList.add('active');
-                        //load new fav container
-                        addToFavorite();
-
-                    })
-                    .catch((err)=>{
-                        console.log(err);
-                    })
+        else{
+            try{
+            btn.classList.remove('active');
             }
+            catch(err){
+                console.log(err);
 
-        }
-        //if already liked then remove that like
-        else if(mealBtnClassName==='fav-button active'){
-            likedMeal=likedMeal.filter((data)=>{
-                if(data.idMeal!==mealId.substring(2)){ 
-                    return data;
-                }
+            }
+            likedMeal=likedMeal.filter((meal)=>{
+                if(meal.idMeal!=id) return meal;
             })
-            likeButton.classList.remove('active');
-            console.log(likeButton.className);
             addToFavorite();
 
         }
     })
-
 }
 
 //create new data and append to parent
@@ -103,33 +96,34 @@ let addDataToMealBody=(mealData,random=false)=>{
 
     `;
     mealsIn.appendChild(par);
+    //console.log(allMealData);
 
-    //store data in array; and change color of button
-    changeBtnColor(par);
+    //save all button to list
+    changeBtnColor(mealData.idMeal);
+
+
 
 }
 
-let removeFav =()=>{ 
-    let mealBtnFav=undefined;
-    favMealListIn.addEventListener('click', (res)=>{
-        mealBtnFav=document.querySelector(`#id${res.target.id.substring(2)}`);
-        if(res.target.className==='rm-button'){
-            let mealId=res.target.id.substring(2);
-            console.log(mealId);
-            //remove this id
-            likedMeal=likedMeal.filter((data)=>{
-                if(data.idMeal!==mealId) return data;
-            })
-            try{
-                mealBtnFav.classList.remove('active');
-            }
-            catch(err){
-                console.error(err);
+let removeFav =(id)=>{ 
+    let btn=undefined;
+    let btnInMain=undefined;
+    try{
+        btn=document.querySelector(`#rm${id}`);
+        btnInMain=document.querySelector(`#id${id}`);
+    }
+    catch(err){
+        console.log(err);
 
-            }
-            addToFavorite();
-        }
-
+    }
+    btn.addEventListener('click', (res)=>{
+        //console.log(likedMeal);
+        likedMeal=likedMeal.filter((meal)=>{
+            console.log(meal.idMeal);
+            if(meal.idMeal!=id) return meal;
+        })
+        addToFavorite();
+        btnInMain.classList.remove('active');
 
     })
 }
@@ -154,7 +148,7 @@ let addToFavorite= ()=>{
         `
         favMealListIn.appendChild(li);
         //rm button
-        removeFav();
+        removeFav(mealData.idMeal);
 
     }
 
@@ -248,6 +242,7 @@ let doReplay =()=>{
     getRandomeMeal();
     let searchText=undefined;
     searchBtnIn.addEventListener('click',()=>{
+        clearAllMealData();
         searchText=searchTermIn.value;
         console.log(searchText);
         if(searchText!=undefined) getMealByName(searchText,true);
@@ -256,3 +251,5 @@ let doReplay =()=>{
 }
 
 doReplay();
+
+
