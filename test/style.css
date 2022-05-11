@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+
+
+.open-button.deactive{
+    pointer-events:none;
+
+
+
+}
+.modal{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,50%);
+
+}
+
+.modal.hidden{
+    opacity:0;
+    pointer-events:none;
+
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid black;
+}
+.modal-header h1{
+
+}
+.modal-body{
+    display:flex;
+    margin;1px;
+    padding:10px 15px;
+
+}
+
+.modal-header button{
+    cursor:pointer;
+    overflow:hidden;
+    outline:none;
+}
