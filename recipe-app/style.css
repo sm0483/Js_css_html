@@ -140,6 +140,7 @@ header button {
 
 .fav-button.active{
     color: rebeccapurple;
+    font-size:20px;
 }
 button{
     background-color: transparent;
