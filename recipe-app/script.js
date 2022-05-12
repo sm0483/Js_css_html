@@ -33,13 +33,24 @@ let clearFavMealListIn= ()=>{
 
 }
 
+//check presence
+
+let isPresentInLikedMeal= (id)=>{
+    let flag=false;
+    likedMeal.forEach((meal)=>{
+        if(meal.idMeal===id) flag=true;
+
+    })
+    return flag;
+}
+
 let changeBtnColor=  (id)=>{
     //event listner for general button in html page
 
     let btn=document.querySelector(`#id${id}`);
     btn.addEventListener('click',(res)=>{
         //let likeMealId=res.target.id.substring(2);
-        if(res.target.className==='fav-button' || res.target.className==='fas fa-heart'){
+        if(!isPresentInLikedMeal(id)){
             likedMealData=getMealbyId(id)
                 .then((res)=>{
                     //console.log(res[0]);
@@ -51,13 +62,10 @@ let changeBtnColor=  (id)=>{
                     console.log(err);
                 })
         }
-        else{
-            try{
+        else if(isPresentInLikedMeal(id)){
+        console.log(isPresentInLikedMeal(id));
+            if(btn!==undefined){
             btn.classList.remove('active');
-            }
-            catch(err){
-                console.log(err);
-
             }
             rmLikedMeal(id);
             addToFavorite();
@@ -82,7 +90,7 @@ let addDataToMealBody=(mealData,random=false)=>{
                 <div class="meal-body">
                     <h4>${mealData.strMeal}</h4>
                     <button class="fav-button", id="id${mealData.idMeal}">
-                        <i class="fas fa-heart" ></i>
+                        <i class="fas fa-heart",id="heart${mealData.idMeal}" ></i>
                     </button>
                 </div>
 
