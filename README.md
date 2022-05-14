@@ -6,3 +6,5 @@ to learn js,css and html
 2.Quiz-App;
 
 3.Recipie-app
+
+4.Note-app

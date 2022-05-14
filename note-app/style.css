@@ -1,0 +1,80 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #7bdaf3;
+    display: flex;
+    flex-wrap: wrap;
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding-top: 3rem;
+}
+
+
+.add {
+    background-color: #9ec862;
+    border-radius: 3px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+}
+
+.note-pannel{
+    background-color: #fff;
+    box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.1); 
+    margin: 20px;
+    height: 400px;
+    width: 400px;
+}
+
+.tools{
+    background-color: #9ec862;
+    display: flex;
+    justify-content: flex-end;
+    padding: 1.5rem;
+
+}
+
+.tools .button{
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+}
+.body{
+    display:flex;
+    flex-wrap:wrap;
+
+}
+
+textarea{
+    background-color: #fff;
+    box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.1); 
+    height: 332px;
+    width:399px;
+    border:none;
+    outline:none;
+}
+
+.freeze-area{
+    pointer-events:none;
+    background-color: #fff;
+    box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.1); 
+    height: 332px;
+    width:399px;
+    border:none;
+    outline:none;
+
+}
+
+
+
+
